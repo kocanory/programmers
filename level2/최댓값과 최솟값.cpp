@@ -6,7 +6,7 @@
 using namespace std;
 
 string solution(string s) {
-    string answer = ""A;
+    string answer = "";
     vector<int>num;
     stringstream ss(s);
     string temp = "";

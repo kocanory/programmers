@@ -2,7 +2,6 @@
 #include <vector>
 #include <algorithm>
 #include <map>
-#include <iostream>
 
 using namespace std;
 
@@ -121,8 +120,6 @@ int solution(string word, vector<string> pages) {
     int answer = 0;
     Word = to_lower(word);
     func(pages);
-    for(auto p : Pages)
-        cout << p.idx << " " << p.basic_p << endl;
     answer = Pages[0].idx;
     return answer;
 }

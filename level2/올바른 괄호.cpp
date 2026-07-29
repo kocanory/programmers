@@ -1,21 +1,20 @@
-#include <string>
-#include <vector>
+#include<string>
+#include <iostream>
+#include <stack>
 
 using namespace std;
 
 bool solution(string s)
 {
-    bool answer = true;
-    vector<char> arr;
-    
-    for(auto a : s){
-        if(a == '(') arr.push_back(a);
-        else{
-            if(arr.empty()) return false;
-            arr.pop_back();
-        }
+    bool answer = false;
+    stack<char> st;
+    for(auto a : s)
+    {
+        if(a == '(') st.push('(');
+        else if(a == ')' && !st.empty()) st.pop();
+        else if(a == ')' && st.empty()) return false;
     }
-    
-    if(!arr.empty()) return false;
+    if(!st.empty()) answer = false;
+    else answer = true;
     return answer;
 }

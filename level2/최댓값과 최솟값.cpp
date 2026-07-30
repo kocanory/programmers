@@ -1,19 +1,20 @@
 #include <string>
 #include <vector>
 #include <sstream>
-#include <algorithm>
 
 using namespace std;
 
 string solution(string s) {
     string answer = "";
-    vector<int>num;
+    int Max = -1e9, Min = 1e9;
+    
     stringstream ss(s);
-    string temp = "";
-    while(getline(ss, temp, ' '))
-    {
-        num.push_back(stoi(temp));
+    string tmp;
+    
+    while(ss >> tmp){
+        Max = max(stoi(tmp), Max);
+        Min = min(stoi(tmp), Min);
     }
-    sort(num.begin(), num.end());
-    return answer = to_string(num.front()) + " " + to_string(num.back());
+    
+    return answer = to_string(Min) + " " + to_string(Max);
 }

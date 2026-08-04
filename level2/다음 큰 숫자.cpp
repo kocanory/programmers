@@ -1,34 +1,30 @@
 #include <string>
 #include <vector>
-#include <cmath>
 
 using namespace std;
 
-int solution(int n) {
-    int answer = 0;
-    int cnt = 0, origin = n;
-    while(n)
-    {
+int check(int n){
+    int cnt = 0;
+    while(n){
         cnt += (n & 1);
         n >>= 1;
     }
+    return cnt;
+}
+
+int solution(int n) {
+    int answer = 0;
     
-    while(true)
-    {
-        int num = origin + 1;
-        int count = 0;
-        while(num)
-        {
-            count += (num & 1);
-            num >>= 1;
+    int cnt = check(n);
+    n++;
+    
+    while(true){
+        if(check(n) == cnt){
+            answer = n;
+            break;
         }
-        if(count == cnt)
-        {
-           answer = origin + 1;
-           break;
-        }
-        origin++;
+        n++;
     }
-    
+
     return answer;
 }

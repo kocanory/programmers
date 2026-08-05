@@ -1,16 +1,18 @@
-#include <iostream>
+#include <vector>
 #include <string>
-#include <stack>
+
 using namespace std;
 
 int solution(string s)
 {
-    int answer = -1;
-    stack<char> st;
-    for(auto a : s)
-    {
-        if(!st.empty() && st.top() == a) st.pop();
-        else st.push(a);
+    vector<char> arr;
+    
+    for(auto a : s){
+        if(!arr.empty() && arr.back() == a)
+            arr.pop_back();
+        else
+            arr.push_back(a);
     }
-    return answer = st.empty() ? 1 : 0;
+
+    return arr.empty();
 }

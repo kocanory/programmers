@@ -1,20 +1,14 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
+#include <string>
+#include <vector>
 
-int fibonachi[100000] = {0, };
-
-int fibo(int n)
-{
-    for(int i = 2;i<=n;i++)
-        fibonachi[i] = (fibonachi[i - 1] + fibonachi[i - 2]) % 1234567;
-}
-
+using namespace std;
 
 int solution(int n) {
-    int answer = 0;
-    fibonachi[0] = 0;
-    fibonachi[1] = 1;
-    fibo(n);
-    return answer = fibonachi[n];
+    vector<int> dp(n + 1);
+    dp[1] = 1;
+    
+    for(int i = 2;i <= n;i++)
+        dp[i] = (dp[i - 1] + dp[i - 2]) % 1234567;
+        
+    return dp[n];
 }

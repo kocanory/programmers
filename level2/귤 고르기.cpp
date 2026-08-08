@@ -5,26 +5,26 @@
 
 using namespace std;
 
-bool comp(pair<int, int> a, pair<int, int> b)
-{
+bool cmp(pair<int, int> a, pair<int, int> b){
     if(a.second == b.second) return a.first < b.first;
     return a.second > b.second;
 }
 
 int solution(int k, vector<int> tangerine) {
     int answer = 0;
-    map<int, int> m;
-    for(auto a : tangerine)
-        m[a]++;
-    vector<pair<int,int>> arr (m.begin(), m.end());
-    sort(arr.begin(), arr.end(), comp);
+    map<int, int> cnt;
     
-    int sum = 0;
-    for(auto a : arr)
-    {
-        sum += a.second;
+    for(auto t : tangerine)
+        cnt[t]++;
+    
+    vector<pair<int, int>> arr(cnt.begin(), cnt.end());
+    sort(arr.begin(), arr.end(), cmp);
+    
+    for(auto a : arr){
+        if(k <= 0) break;
+        k -= a.second;
         answer++;
-        if(sum >= k) break;
     }
+    
     return answer;
 }

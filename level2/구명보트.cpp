@@ -1,29 +1,18 @@
 #include <string>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
-int w[241] = {0, };
 
 int solution(vector<int> people, int limit) {
-    int answer = 0;
-    for(auto a : people)
-        w[a]++;
+    int answer = 0, l = 0, r = people.size() - 1;
+    sort(people.begin(), people.end());
     
-    for(auto a : people)
-    {
-        if(w[a] > 0)
-        {
-            w[a]--;
-            for(int i = limit - a;i > 39;i--)
-            {
-                if(w[i] > 0)
-                {
-                    w[i]--;
-                    break;
-                }
-            }
-            answer++;
-        }
+    while(l <= r){
+        if(people[l] + people[r] <= limit) l++;
+        r--;
+        answer++;
     }
+    
     return answer;
 }

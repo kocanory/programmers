@@ -1,23 +1,38 @@
 #include <string>
 #include <vector>
+#include <map>
 
 using namespace std;
 
 int solution(vector<string> want, vector<int> number, vector<string> discount) {
     int answer = 0;
-    for(int i = 0;i<discount.size() - 9;i++)
-    {
-        int j = 0;
-        for(j = 0;j < want.size();j++)
-        {
-            int check = 0;
-            for(int k = i;k< i + 10;k++)
-            {
-                if(discount[k] == want[j]) check++;
-            }
-            if(check < number[j]) break;
+    map<string, int> check;
+    
+    for(int i = 0;i < 10;i++)
+        check[discount[i]]++;
+    
+    bool flag = true;
+    for(int i = 0;i < want.size();i++)
+        if(check[want[i]] < number[i]){
+            flag = false;
+            break;
         }
-        if(j == want.size()) answer++;
+    
+    if(flag) answer++;
+    
+    for(int i = 0;i < discount.size() - 10;i++){
+        check[discount[i]]--;
+        check[discount[i + 10]]++;
+        
+        bool flag = true;
+        for(int i = 0;i < want.size();i++)
+            if(check[want[i]] < number[i]){
+                flag = false;
+                break;
+            }
+
+        if(flag) answer++;
     }
+    
     return answer;
 }

@@ -1,23 +1,25 @@
-#include <string>
 #include <vector>
+#include <cmath>
+#include <map>
+#include <algorithm>
 
 using namespace std;
 
-int process[101] = {0, };
-
 vector<int> solution(vector<int> progresses, vector<int> speeds) {
     vector<int> answer;
-    int back = 0;
-    for(int i = 0;i<progresses.size();i++)
-    {
-        int remain = (100 - progresses[i]) / speeds[i];
-        if((100 - progresses[i]) % speeds[i]) remain++;
-        if(back > remain)
-            remain = back;
-        process[remain]++;
-        back = remain;
+    map<int, int> check;
+    
+    for(int i = 0, days = 0;i < progresses.size();i++){
+        days = max(days, (int)ceil((100 - progresses[i]) / (double)speeds[i]));
+        check[days]++;
     }
-    for(int i = 0;i<=100;i++)
-        if(process[i]) answer.push_back(process[i]);
+    
+    vector<pair<int, int>> arr(check.begin(), check.end());
+    
+    sort(arr.begin(), arr.end());
+    
+    for(auto [k, v] : arr)
+        answer.push_back(v);
+    
     return answer;
 }

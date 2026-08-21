@@ -6,17 +6,16 @@ using namespace std;
 
 int solution(vector<int> citations) {
     int answer = 0;
-    sort(citations.begin(), citations.end());
-    for(int i = citations.back();i>= 0;i--)
-    {
-        int count = 0;
-        for(auto a : citations)
-        {
-            if(a >= i)
-                count++;
-        }
-        if(count >= i)
-        {
+    vector<int> check(*max_element(citations.begin(), citations.end()) + 1);
+    
+    for(auto c : citations)
+        check[c]++;
+    
+    for(int i = check.size() - 2;i >= 0;i--)
+        check[i] += check[i + 1];
+    
+    for(int i = check.size() - 1;i >= 0;i--){
+        if(check[i] >= i && citations.size() - check[i] <= i){
             answer = i;
             break;
         }

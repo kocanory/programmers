@@ -1,45 +1,27 @@
+#include <map>
+#include <vector>
 #include <string>
+
 using namespace std;
 
-bool visit[11][11][4];
+bool check[11][11][4];
+map<char, int> idx = {{'U', 0}, {'D', 3}, {'L', 1}, {'R', 2}};
+vector<pair<int, int>> dir = {{-1, 0}, {0, -1}, {0, 1}, {1, 0}};
 
 int solution(string dirs) {
-    int answer = 0;
-    int i = 5, j = 5;
-    int di[] = {-1, 0, 0, 1};
-    int dj[] = {0, -1, 1, 0};
+    int answer = 0, x = 5, y = 5;
     
-    for(auto a : dirs)
-    {
-        int dir = 0;
-        if(a == 'L')
-        {
-            dir = 0;
-        }
+    for(auto d : dirs){
+        int nx = x + dir[idx[d]].first, ny = y + dir[idx[d]].second;
         
-        else if(a == 'R')
-        {
-            dir = 3;
+        if(nx >= 0 && nx <= 10 && ny >= 0 && ny <= 10){
+            if(!check[nx][ny][idx[d]] && !check[x][y][3 - idx[d]]){
+                answer++;
+                check[nx][ny][idx[d]] = true;
+                check[x][y][3 - idx[d]] = true;
+            }
+            x = nx, y = ny;
         }
-        else if(a == 'D')
-        {
-            dir = 1;
-        }
-        else if(a == 'U')
-        {
-            dir = 2;
-        }
-        int ni = i + di[dir];
-        int nj = j + dj[dir];
-        if((ni < 0 || ni > 10) || (nj < 0 || nj > 10)) continue;
-        if(!visit[i][j][dir] && !visit[ni][nj][3-dir])
-        {
-            answer++;
-            visit[i][j][dir] = true;
-            visit[ni][nj][3-dir] = true;
-        }
-        i = ni;
-        j = nj;
     }
     
     return answer;

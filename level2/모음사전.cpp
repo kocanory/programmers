@@ -3,30 +3,26 @@
 
 using namespace std;
 
-void recursive(int &count, bool &flag, string word, string rec, string alpha)
-{
+int answer = -1;
+bool flag = true;
+string s = "AEIOU";
+
+void dfs(string now, string word){
+    if(now.size() >= 6) return;
     
-    if(word == rec)
-    {
-        flag = true;
-        return;        
+    answer++;
+    if(now == word){
+        flag = false;
+        return;
     }
-    if(rec.length() >= 5) return;
     
-    for(int i = 0;i<5;i++)
-    {
-        count++;
-        rec += alpha[i];        
-        recursive(count, flag, word, rec, alpha);
-        if(flag) return;
-        rec.pop_back();
+    for(int i = 0;i < 5;i++){
+        dfs(now + s[i], word);
+        if(!flag) return;
     }
 }
 
 int solution(string word) {
-    int answer = 0, count = 0;
-    bool flag = false;
-    string alpha = "AEIOU";
-    recursive(count, flag, word, "", alpha);
-    return answer = count;
+    dfs("", word);
+    return answer;
 }

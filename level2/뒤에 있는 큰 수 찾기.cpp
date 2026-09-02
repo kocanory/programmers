@@ -1,21 +1,18 @@
 #include <string>
 #include <vector>
-#include <stack>
 
 using namespace std;
 
 vector<int> solution(vector<int> numbers) {
-    vector<int> answer(numbers.size(), -1);
-    stack<int> s;
-    for(int i = 0;i<numbers.size();i++)
-    {
-        int n = numbers[i];
-        while(!s.empty() && numbers[s.top()] < n)
-        {
-            answer[s.top()] = n;
-            s.pop();
+    vector<int> answer(numbers.size(), -1), idx;
+    
+    for(int i = 0;i < numbers.size();i++){
+        while(!idx.empty() && numbers[idx.back()] < numbers[i]){
+            answer[idx.back()] = numbers[i];
+            idx.pop_back();
         }
-        s.push(i);
+        
+        idx.push_back(i);
     }
     return answer;
 }

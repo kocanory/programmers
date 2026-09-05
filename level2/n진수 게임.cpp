@@ -3,34 +3,30 @@
 
 using namespace std;
 
+char conv(int n){
+    if(n >= 10) return char(n - 10 + 'A');
+    return n + '0';
+}
+
 string solution(int n, int t, int m, int p) {
-    string answer = "";
-    string word = "";
-    int count = 0;
-    while(word.length() <= t * m)
-    {        
-        int number = count;
-        string str = "";
-        if(number == 0)
-        {
-            str += '0';
+    string answer = "", arr = "0";
+    int num = 1;
+    
+    while(arr.size() < t * m){
+        int tmp = num;
+        string s = "";
+        
+        while(tmp){
+            s = conv(tmp % n) + s;
+            tmp /= n;
         }
-        else
-        {
-            while(number > 0)
-            {
-                if(number % n < 10)
-                    str = to_string(number % n) + str;
-                else
-                    str = (char)('A' + (number % n) - 10) + str;         
-                number /= n;
-            }
-        }
-        word += str;
-        count++;
+        
+        arr += s;
+        num++;
     }
     
-    for(int i = p - 1;answer.length() < t;i += m)
-        answer += word[i];
+    for(int i = p - 1;i < t * m;i += m)
+        answer += arr[i];
+    
     return answer;
 }

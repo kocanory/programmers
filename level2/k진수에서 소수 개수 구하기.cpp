@@ -1,34 +1,38 @@
 #include <string>
 #include <vector>
-#include <sstream>
 #include <cmath>
+#include <sstream>
 
 using namespace std;
 
 int solution(int n, int k) {
     int answer = 0;
     string num = "";
-    while(n > 0)
-    {
+    
+    while(n){
         num = to_string(n % k) + num;
         n /= k;
     }
     
+    vector<string> arr;
     stringstream ss(num);
-    string temp = "";
-    while(getline(ss, temp, '0'))
-    {
-        if(temp != "")
-        {
-            long number = stol(temp);
+    string s;
+    
+    while(getline(ss, s, '0'))
+        arr.push_back(s);
+    
+    for(auto a : arr){
+        if(a != ""){
             bool flag = true;
-            for(int i = 2;i<=sqrt(number);i++)
-                if(number % i == 0)
-                {
+            long long val = stoll(a);
+            for(int i = 2;i < int(sqrt(val)) + 1;i++){
+                if(val % i == 0){
                     flag = false;
                     break;
                 }
-            if(number != 1 && flag) answer++;
+            }
+            if(flag && val != 1)
+                answer++;
         }
     }
     

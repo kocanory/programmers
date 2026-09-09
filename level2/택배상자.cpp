@@ -1,32 +1,29 @@
 #include <string>
 #include <vector>
-#include <stack>
 
 using namespace std;
 
 int solution(vector<int> order) {
-    int answer = 0;
-    stack<int> container;
-    int index = 0;
+    int answer = 0, idx = 0;
+    vector<int> sub;
     
-    for(int i = 1;i<=order.size();i++)
-    {
-        bool flag = false;
-        if(i == order[index])
-        {
-            index++;
+    for(int i = 1, flag;i <= order.size();i++){
+        flag = false;
+        if(order[idx] == i){
+            idx++;
             answer++;
             flag = true;
         }
-        while(!container.empty() && container.top() == order[index])
-        {
-            index++;
-            container.pop();
+        
+        while(!sub.empty() && sub.back() == order[idx]){
+            idx++;
+            sub.pop_back();
             answer++;
             flag = true;
         }
-        if(!flag) container.push(i);
+        
+        if(!flag) sub.push_back(i);
+        
     }
-    
     return answer;
 }

@@ -4,41 +4,32 @@
 
 using namespace std;
 
-bool comp(pair<string, int> a, pair<string, int> b)
-{
-    if(a.first.length() == b.first.length()) return a.first < b.first;
-    return a.first.length() > b.first.length();
+bool cmp(pair<string, int> a, pair<string, int> b){
+    return a.first.size() > b.first.size();
 }
 
 vector<int> solution(string msg) {
     vector<int> answer;
-    vector<pair<string, int>> dict;
-    for(int i = 0;i<26;i++)
-    {
-        string temp = "";
-        temp += ('A' + i);
-        dict.push_back({temp, i + 1});
-    }
+    vector<pair<string, int>> check;
     
-    while(!msg.empty())
-    {
-        for(auto a : dict)
-        {
-            if(msg.find(a.first) == 0)
-            {
-                answer.push_back(a.second);
-                msg.erase(0, a.first.length());
-                if(msg.length() > 0)
-                {
-                    string temp = "";
-                    temp += msg[0];
-                    string word = a.first + temp;
-                    dict.push_back({word, dict.size() + 1});
-                    sort(dict.begin(), dict.end(), comp);
+    for(int i = 1;i <= 26;i++)
+        check.push_back({string(1, 'A' + i - 1), i});
+    
+    while(!msg.empty()){
+        for(auto [w, i] : check){
+            if(msg.find(w) == 0){
+                answer.push_back(i);
+                msg.erase(0, w.size());
+                
+                if(!msg.empty()){
+                    check.push_back({w + msg[0], check.size() + 1});
+                    sort(check.begin(), check.end(), cmp);
+                    
                 }
                 break;
             }
-         }
+        }
     }
+    
     return answer;
 }

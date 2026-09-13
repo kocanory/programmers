@@ -1,25 +1,29 @@
 #include <string>
 #include <vector>
-#include <algorithm>
+#include <map>
 
 using namespace std;
 
 int solution(string skill, vector<string> skill_trees) {
     int answer = 0;
-    for(auto a : skill_trees)
-    {
-        string sub = "";
-        for(auto b : a)
-        {
-            
-            for(auto c : skill)
-            {
-                if(b == c)
-                    sub += b;
+    map<char, int> check;
+    
+    for(int i = 0;i < skill.size();i++)
+        check[skill[i]] = i + 1;
+    
+    for(auto st : skill_trees){
+        int flag = true, idx = 0;
+        for(auto s : st){
+            if(check[s]){
+                if(check[s] == idx + 1) idx++;
+                else{
+                    flag = false;
+                    break;
+                }
             }
         }
-        if(skill.find(sub) == 0)
-            answer++;
+        
+        if(flag) answer++;
     }
     return answer;
 }

@@ -4,45 +4,36 @@
 
 using namespace std;
 
-vector<string> detach(string word)
-{
-    vector<string> temp;
-    for(int i = 0;i<word.length();i++)
-    {
-        if(word[i] >= '0' && word[i] <= '9')
-        {
-            temp.push_back(word.substr(0, i));
-            word.erase(0, i);
-            break;
-        }
-        else
-            word[i] = tolower(word[i]);
+vector<string> conv(string f){
+    int idx = 0;
+    string tmp = "";
+    vector<string> v;
+    
+    while(idx < f.size() && !isdigit(f[idx])){
+        tmp += tolower(f[idx]);
+        idx++;
     }
     
-    for(int i = 0;i<word.length();i++)
-    {
-        if(!(word[i] >= '0' && word[i] <= '9'))
-        {
-            temp.push_back(word.substr(0, i));
-            word.erase(0, i);
-            break;
-        }
+    v.push_back(tmp);
+    tmp.clear();
+        
+    while(idx < f.size() && isdigit(f[idx])){
+        tmp += f[idx];
+        idx++;
     }
-    temp.push_back(word);
-    return temp;
+    
+    v.push_back(tmp);
+    v.push_back(f.substr(idx, f.size() - idx));
+    return v;
 }
 
-bool comp(string a, string b)
-{
-    vector<string> a_detach = detach(a);
-    vector<string> b_detach = detach(b);
-    
-    if(a_detach[0] == b_detach[0]) return stoi(a_detach[1]) < stoi(b_detach[1]);
-    return a_detach[0] < b_detach[0];
+bool comp(string a, string b){
+    vector<string> va = conv(a), vb = conv(b);
+    if(va[0] == vb[0]) return stoi(va[1]) < stoi(vb[1]);
+    return va[0] < vb[0];
 }
 
 vector<string> solution(vector<string> files) {
-    vector<string> answer;
     stable_sort(files.begin(), files.end(), comp);
-    return answer = files;
+    return files;
 }

@@ -4,21 +4,21 @@
 
 using namespace std;
 
-bool comp(int a, int b)
-{
-    string str_a = to_string(a), str_b = to_string(b);
-    if(str_a[0] == str_b[0])
-    {
-        return stoi(str_a + str_b) > stoi(str_b + str_a);
+bool cmp(int a, int b){
+    string a_str = "", b_str = "";
+    
+    for(int i = 0;i < 3;i++) {
+        a_str += to_string(a);
+        b_str += to_string(b);
     }
-    return str_a[0]  > str_b[0];
+    
+    return a_str > b_str;
 }
 
 string solution(vector<int> numbers) {
     string answer = "";
-    sort(numbers.begin(), numbers.end(), comp);
-    if(numbers[0] == 0) return "0";
-    for(auto a : numbers)
-        answer += to_string(a);
-    return answer;
+    sort(numbers.begin(), numbers.end(), cmp);
+    for(auto n : numbers) answer += to_string(n);
+    
+    return (answer[0] != '0' ? answer : "0");
 }

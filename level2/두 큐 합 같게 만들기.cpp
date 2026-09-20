@@ -5,45 +5,33 @@
 using namespace std;
 
 int solution(vector<int> queue1, vector<int> queue2) {
-    int answer = 0;
-    long sum1 = 0, sum2 = 0, count = 0, size = queue1.size();
-    queue<int> q1, q2;
-    for(int i = 0;i<size;i++)
-    {
-        sum1 += queue1[i];
+    long long s1 = 0, s2 = 0, cnt = 0;
+    queue<long long> q1, q2;
+    
+    for(int i = 0;i < queue1.size();i++){
+        s1 += queue1[i];
+        s2 += queue2[i];
         q1.push(queue1[i]);
-        sum2 += queue2[i];
         q2.push(queue2[i]);
     }
-    int sum = sum1 + sum2;
-    while(true)
-    {
-        if(count > 4 * size)
-        {
-            answer = -1;
-            break;
+    
+    while(true){
+        if(cnt > queue1.size() * 4) return - 1;
+        
+        long long val;
+        if(s1 > s2){
+            val = q1.front(); q1.pop();
+            s1 -= val;
+            s2 += val;
+            q2.push(val);
         }
-        if(sum1 > sum2)
-        {
-            sum1 -= q1.front();
-            sum2 += q1.front();
-            q2.push(q1.front());
-            q1.pop();
-            count++;
+        else if(s1 < s2){
+            val = q2.front(); q2.pop();
+            s2 -= val;
+            s1 += val;
+            q1.push(val);
         }
-        else if(sum1 < sum2)
-        {
-            sum2 -= q2.front();
-            sum1 += q2.front();
-            q1.push(q2.front());
-            q2.pop();
-            count++;
-        }
-        else
-        {
-            answer = count;
-            break;
-        }
+        else return cnt;
+        cnt++;
     }
-    return answer;
 }

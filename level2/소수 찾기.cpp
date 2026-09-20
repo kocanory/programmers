@@ -1,48 +1,35 @@
 #include <string>
 #include <vector>
-#include <cmath>
-#include <set>
-#include <algorithm>
+
 using namespace std;
 
-bool check[10000000] = {false, };
-bool visit[10000000] = {false, };
+int answer = 0;
+vector<int> check(10000000, 1), num(10000000), visit;
 
-void dfs(set<int> &s, string numbers, string num, int index, int count)
-{
-    if(count == index)
-    {
-        s.insert(stoi(num));
-        return;
+void dfs(string now, string &numbers){
+    if(now.size() && check[stoi(now)] && !num[stoi(now)]){
+        answer++;
+        num[stoi(now)] = true;
     }
-    for(int i = 0;i < numbers.length();i++)
-    {
-        if(!visit[i])
-        {
+    
+    for(int i = 0;i < numbers.size();i++){
+        if(!visit[i]){
             visit[i] = true;
-            dfs(s, numbers, num + numbers[i], index, count + 1);
+            dfs(now + numbers[i], numbers);
             visit[i] = false;
         }
     }
 }
 
 int solution(string numbers) {
-    int answer = 0;
-    set<int> s;
-    for(int i = 1 ;i<=numbers.length();i++)
-        dfs(s, numbers, "", i, 0);
+    visit.assign(numbers.size(), 0);
+    check[0] = 0, check[1] = 0;
     
-    int MAX = *max_element(s.begin(), s.end());
-    check[0] = true;
-    check[1] = true;
-    for(int i = 2;i<=sqrt(9999999);i++)
-    {
-        if(!check[i])
-            for(int j = i + i;j<=9999999;j += i)
-                check[j] = true;
-    }    
-    
-    for(auto a : s)
-        if(!check[a]) answer++;
+    for(int i = 2;i < 10000000;i++){
+        if(!check[i]) continue;
+        for(int j = 2 * i;j < 10000000;j += i)
+            check[j] = false;
+    }
+    dfs("", numbers);
     return answer;
 }

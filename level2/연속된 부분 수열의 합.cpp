@@ -4,32 +4,21 @@
 using namespace std;
 
 vector<int> solution(vector<int> sequence, int k) {
-    vector<int> answer(2);
-    answer[0] = 0;
-    answer[1] = sequence.size() - 1;
-    int left = 0, right = 1, sum = sequence[left];
+    vector<int> answer;
     
-    while(left < right)
-    {
-        if(sum == k)
-        {
-            if(right - 1 - left < answer[1] - answer[0])
-            {
-                answer[0] = left;
-                answer[1] = right - 1;
-            }
-            sum -= sequence[left++];
-        }
-        else if(sum > k)
-        {
-            sum -= sequence[left++];      
-        }
-        else if(right < sequence.size())
-        {
-            sum += sequence[right++];
-        }
+    for(int i = 1;i < sequence.size();i++)
+        sequence[i] += sequence[i - 1];
+    
+    int l = -1, r = 0;
+    
+    while(r < sequence.size()){
+        int val = sequence[r] - (l == -1 ? 0 : sequence[l]);
+        
+        if(val < k) r++;
+        else if(val > k) l++;
         else{
-            break;
+            if(answer.empty() || r - l - 1 < answer[1] - answer[0]) answer = {l + 1, r};
+            r++;
         }
     }
     return answer;

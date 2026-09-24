@@ -5,28 +5,23 @@
 using namespace std;
 
 int solution(int bridge_length, int weight, vector<int> truck_weights) {
-    int answer = 0, sum = 0;
-    vector<pair<int, int>> go;
-    while(true)
-    {
-        if(!go.empty())
-        {
-            for(auto &a : go)
-                a.second++;
-            if(go[0].second >= bridge_length)
-            {
-                sum -= go[0].first;
-                go.erase(go.begin());
-            }
+    int answer = 1, sum = 0, idx = 0;
+    queue<pair<int, int>> q;
+    
+    while(true){
+        if(!q.empty() && answer - q.front().first >= bridge_length){
+            sum -= q.front().second;
+            q.pop();
         }
-        if(go.empty() && truck_weights.empty()) break;
-        if(!truck_weights.empty() && sum + truck_weights[0] <= weight)
-        {
-            sum += truck_weights[0];
-            go.push_back(make_pair(truck_weights[0], 0));
-            truck_weights.erase(truck_weights.begin());
+        
+        if(q.empty() && idx == truck_weights.size())
+            break;
+        
+        if(idx < truck_weights.size() && q.size() < bridge_length && sum + truck_weights[idx] <= weight){
+            sum += truck_weights[idx];
+            q.push({answer, truck_weights[idx++]});
         }
         answer++;
     }
-    return answer + 1;
+    return answer;
 }

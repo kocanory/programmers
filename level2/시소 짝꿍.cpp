@@ -1,55 +1,32 @@
 #include <string>
 #include <vector>
+#include <numeric>
 #include <map>
 
 using namespace std;
 
-int gcd(int a, int b)
-{
-    if(a < b)
-    {
-        int temp = a;
-        a = b;
-        b = temp;
-    }
-    while(b > 0)
-    {
-        int n = a % b;
-        a = b;
-        b = n;
-    }
-    return a;
-}
-
-int lcm(int a, int b)
-{
+int lcm(int a, int b){
     return a * b / gcd(a, b);
 }
 
 long long solution(vector<int> weights) {
     long long answer = 0;
-    map<int, int> m;
-    for(auto w : weights)
-        m[w]++;
+    map<int, int> check;
     
-    for(auto a : m)
-    {
-        for(int i = 0;i<a.second-1;i++)
-            for(int j = i + 1;j<a.second;j++)
-                answer++;
+    for(auto w : weights) check[w]++;
+    vector<pair<int, int>> arr(check.begin(), check.end());
+    
+    for(int i = 0;i < arr.size();i++){
+        auto [k1, v1] = arr[i];
+        answer += v1 * (long long)(v1 - 1) / 2;
         
-        for(auto b : m)
-        {
-            if(a.first != b.first)
-            {
-                int l = lcm(a.first, b.first);
-                if(l == b.first)
-                    l *= 2;
-                if(l / min(a.first, b.first) < 5)
-                    answer += (a.second * b.second);
-            }
+        for(int j = i + 1;j < arr.size();j++){
+            auto [k2, v2] = arr[j];
+            int l = lcm(k1, k2);
+            if (l == k1 || l == k2) l *= 2;
+            if (l / min(k1, k2) < 5) answer += v1 * (long long)v2;
         }
-        m.erase(a.first);
     }
+    
     return answer;
 }

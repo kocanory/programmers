@@ -1,45 +1,37 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <set>
-#include <cmath>
 
 using namespace std;
 
-map<int, set<int>> m;
-set<int> visited;
-int len, Min;
+int answer, len;
+vector<bool> check;
+map<int, vector<int>> graph;
 
-void init(vector<vector<int>> wires)
-{
-    for(auto a : wires)
-    {
-        m.insert({a[0], set<int>()});
-        m.insert({a[1], set<int>()});
-        m[a[0]].insert(a[1]);
-        m[a[1]].insert(a[0]);
+int dfs(int now){
+    int cnt = 1;
+    
+    for(auto nxt : graph[now]){
+        if(!check[nxt]){
+            check[nxt] = true;
+            cnt += dfs(nxt);
+        }
     }
+    
+    answer = min(answer, abs((len - cnt) - cnt));
+    return cnt;
 }
 
-int treeCount(int root)
-{
-    visited.insert(root);
-    int count = 1;
-    for(auto a : m[root])
-    {
-        if(visited.find(a) != visited.end()) continue;
-        count += treeCount(a);
-    }
-    int other = len - count;
-    Min = min(Min, abs(count - other));
-    return count;
-}
 int solution(int n, vector<vector<int>> wires) {
-    int answer = -1;
-    init(wires);
-    Min = n;
-    len = n;
-    int count = treeCount(wires[0][0]);
-    if(count != n) return answer;
-    return answer = Min;
+    answer = n, len = n;
+    check.assign(n + 1, false);
+    
+    for(auto w : wires){
+        graph[w[0]].push_back(w[1]);
+        graph[w[1]].push_back(w[0]);
+    }
+    
+    check[1] = true;
+    dfs(1);
+    return answer;
 }

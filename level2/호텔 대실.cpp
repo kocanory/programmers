@@ -4,47 +4,45 @@
 #include <algorithm>
 
 using namespace std;
-bool comp(vector<int> a, vector<int> b)
-{
-    if(a[0] == b[0]) return a[1] < b[1];
-    return a[0] < b[0];
+
+int conv(string t){
+    stringstream ss(t);
+    string s;
+    int res = 0, m = 60;
+    
+    while(getline(ss, s, ':')){
+        res += stoi(s) * m;
+        m /= 60;
+    }
+    
+    return res;
 }
-int convert(string time)
-{
-    vector<int> t;
-    stringstream ss(time);
-    string s = "";
-    while(getline(ss, s, ':'))
-        t.push_back(stoi(s));
-    return 60 * t[0] + t[1];
-}
+
 int solution(vector<vector<string>> book_time) {
     int answer = 0;
-    vector<bool> visit(book_time.size(), false);
-    vector<vector<int>> time;
-    for(auto b : book_time)
-    {
-        vector<int> temp;
-        temp.push_back(convert(b[0]));
-        temp.push_back(convert(b[1]));
-        time.push_back(temp);
-    }
-    sort(time.begin(), time.end(), comp);
+    vector<pair<int, int>> arr;
+    vector<bool> check(book_time.size());
     
-    while(true)
-    {
+    for(auto b : book_time)
+        arr.push_back({conv(b[0]), conv(b[1])});
+    
+    sort(arr.begin(), arr.end());
+    
+    while(true){
+        bool flag = false;
         int back = -10;
-        for(int i = 0;i<time.size();i++)
-        {
-            if(!visit[i] && time[i][0] - back >= 10)
-            {
-                visit[i] = true;
-                back = time[i][1];
+        
+        for(int i = 0;i < arr.size();i++){
+            if(!check[i] && arr[i].first - back >= 10){
+                check[i] = true;
+                back = arr[i].second;
+                flag = true;
             }
         }
-        if(back == -10)
-            break;
+        
+        if(!flag) break;
         answer++;
     }
+    
     return answer;
 }

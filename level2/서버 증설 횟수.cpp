@@ -5,21 +5,15 @@ using namespace std;
 
 int solution(vector<int> players, int m, int k) {
     int answer = 0;
-    int size = players.size();
-    vector<int> server(size);
+    vector<int> server(players.size());
     
-    for(int i = 0;i < size;i++){
+    for(int i = 0;i < players.size();i++){
         if(players[i] >= m){
-            int n = players[i] / m;
-            if(server[i] < n){
-                int add = n - server[i];
+            int add = max(0, players[i] / m - server[i]);
+            if(add){
                 answer += add;
-                for(int j = 0;j < k;j++){
-                    if(i + j < size)
-                        server[i + j] += add;
-                    else
-                        break;
-                }
+                for(int j = 0;j < k && i + j < server.size();j++)
+                    server[i + j] += add;
             }
         }
     }

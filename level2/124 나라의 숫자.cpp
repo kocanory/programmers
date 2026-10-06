@@ -1,21 +1,17 @@
 #include <string>
 #include <vector>
+#include <cmath>
 
 using namespace std;
 
 string solution(int n) {
     string answer = "";
-    int arr[] = {1, 2, 4};
-    string num = "";
-    while(n > 0)
-    {
+    
+    while(n){
         n--;
-        num = to_string(n % 3) + num;
+        answer = to_string((int)pow(2, n % 3)) + answer;
         n /= 3;
     }
-    for(auto a : num)
-    {
-        answer += to_string(arr[a - '0']);
-    }
+    
     return answer;
 }

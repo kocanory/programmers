@@ -1,96 +1,74 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <map>
 
 using namespace std;
-bool isSame(string &m, string &temp)
-{
-    int idx;
-    for(int i = 0;i<m.length();i++)
-    {
-        if((idx = m.find(temp, i)) != -1 && m[idx + temp.length()] != '#')
-            return true;
+
+map<string, string> m = {{"C#", "c"}, {"D#", "d"}, {"F#", "f"}, {"G#", "g"}, {"A#", "a"}};
+
+int conv(string t){
+    stringstream ss(t);
+    string s;
+    int res = 0, mul = 60;
+    while(getline(ss, s, ':')){
+        res += stoi(s) * mul;
+        mul /= 60;
     }
-    for(int i = 0;i<temp.length();i++)
-    {
-        if((idx = temp.find(m, i)) != -1 && temp[idx + m.length()] != '#')
-            return true;
+    return res;
+}
+
+string change(string x){
+    
+    string res = "";
+    for(int i = 0;i < x.size();i++){
+        if(x[i + 1] == '#'){
+            res += m[x.substr(i, 2)];
+            i++;
+        }
+        else
+            res += x[i];
     }
-    return false;
+    return res;
 }
 
 string solution(string m, vector<string> musicinfos) {
     string answer = "";
-    int time = 0;
-    for(auto a : musicinfos)
-    {
-        stringstream ss(a);
-        string s = "";
+    m = change(m);
+    int maxL = 0;
+    
+    for(auto mu : musicinfos){
+        stringstream ss(mu);
+        string s;
         vector<string> vec;
-        int play = 0;
+        
         while(getline(ss, s, ','))
             vec.push_back(s);
         
-        stringstream t1(vec[0]);
-        int n = 60;
-        while(getline(t1, s, ':'))
-        {
-            play -= (stoi(s) * n);
-            n /= 60;
+        
+        int l = conv(vec[1]) - conv(vec[0]);
+        if(maxL >= l) continue;
+        
+        s = "";
+        for(int i = 0, idx = 0;i < l;i++){
+            s += vec[3][idx];
+            idx = (idx + 1) % vec[3].size();
+            if(vec[3][idx] == '#'){
+                s += vec[3][idx];
+                idx = (idx + 1) % vec[3].size();
+            }
         }
         
-        stringstream t2(vec[1]);
-        n = 60;
-        while(getline(t2, s, ':'))
-        {
-            play += (stoi(s) * n);
-            n /= 60;
-        }
-        if(time >= play) continue;
-        int length = 0;
-        for(auto a: vec[3])
-            if(a != '#')
-                length++;
-        int count = 0;
-        if(play >= length)
-        {
-            for(int i = 0;;i++)
-            {
-                vec[3] += vec[3][i];
-                if(vec[3][(i + 1)] == '#')
-                {
-                    vec[3] += '#';
-                    i++;
-                }
-                count++;
-                if(count >= play - length)
-                    break;
+        s = change(s);
+
+        if (s.find(m) != string::npos){
+            if(maxL < l){
+                maxL = l;
+                answer = vec[2];
             }
         }
-        else
-        {
-            string temp = "";
-            for(int i = 0;;i++)
-            {
-                temp += vec[3][i];
-                if(vec[3][(i + 1)] == '#')
-                {
-                    temp += '#';
-                    i++;
-                }
-                count++;
-                if(count >= play)
-                    break;
-            }
-            vec[3] = temp;
-        }
-  
-        if(isSame(m, vec[3]))
-        {
-            answer = vec[2];
-            time = play;
-        }
-            
+        
     }
-    return answer = (answer == "") ? "(None)" : answer;
+    
+    return (answer.empty() ? "(None)" : answer);
 }

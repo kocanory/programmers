@@ -1,39 +1,44 @@
 #include <string>
 #include <vector>
+#include <queue>
 
 using namespace std;
 
 vector<int> solution(int rows, int columns, vector<vector<int>> queries) {
     vector<int> answer;
-    int dx[] = {0, 1, 0, -1};
-    int dy[] = {1, 0, -1, 0};
-    
     vector<vector<int>> arr;
+    vector<pair<int, int>> d = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
     
-    for(int i = 0;i<rows;i++)
-    {
-        vector<int> temp;
-        for(int j = i * columns + 1;j <= i * columns + columns;j++)
-            temp.push_back(j);
-        arr.push_back(temp);
+    for(int i = 0;i < rows;i++){
+        vector<int> tmp;
+        for(int j = 0;j < columns;j++)
+            tmp.push_back(i * columns + j + 1);
+        arr.push_back(tmp);
     }
     
-    for(auto q : queries)
-    {
-        int direction = 0;
-        pair<int, int> now = make_pair(q[0] - 1, q[1]);
-        vector<vector<int>> back = arr;
-        int val = 10001;
-        while(true)
-        {
-            val = min(val, arr[now.first][now.second]);
-            arr[now.first][now.second] = back[now.first - dx[direction]][now.second - dy[direction]];
-            if(now.first == q[0] - 1 && now.second == q[1] - 1)
+    for(auto qu : queries){
+        int sx = qu[0], sy = qu[1], ex = qu[2], ey = qu[3], back = arr[sx - 1][sy - 1], val = rows * columns, idx = 0;
+        
+        queue<pair<int, int>> q;
+        q.push({sx - 1, sy});
+        
+        while(true){
+            auto [x, y] = q.front();
+            q.pop();
+            int tmp = back;
+            back = arr[x][y];
+            arr[x][y] = tmp;
+            val = min(val, arr[x][y]);
+            
+            if(x == sx - 1 && y == sy - 1)
                 break;
-            if(now.first + dx[direction] < q[0] - 1 || now.first + dx[direction] >= q[2] || now.second + dy[direction] < q[1] - 1 || now.second + dy[direction] >= q[3])
-                direction++;
-            now.first += dx[direction];
-            now.second += dy[direction];
+            
+            int nx = x + d[idx].first, ny = y + d[idx].second;
+            
+            if(nx < sx - 1 || nx >= ex || ny < sy - 1 || ny >= ey) idx++;
+            
+            nx = x + d[idx].first, ny = y + d[idx].second;
+            q.push({nx, ny});
         }
         answer.push_back(val);
     }

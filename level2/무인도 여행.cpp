@@ -1,77 +1,56 @@
 #include <string>
 #include <vector>
+#include <queue>
 #include <algorithm>
 
 using namespace std;
-void dfs(vector<int> &ans_list, vector<vector<bool>> &visited, int x, int y, vector<vector<int>> map)
-{
-    if(x < 0 || x > map.size() - 1 || y < 0 || y > map[0].size() - 1)
-        return;
-    if(map[x][y] == -1) return;
-    if(visited[x][y]) return;
+
+vector<vector<int>> arr, check;
+vector<int> answer;
+vector<pair<int, int>> d = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+int bfs(int sx, int sy){
+    queue<pair<int, int>> q;
+    q.push({sx, sy});
+    check[sx][sy] = true;
+    int res = 0;
     
-    visited[x][y] = true;
+    while(!q.empty()){
+        auto [x, y] = q.front();
+        q.pop();
+        res += arr[x][y];
+        
+        for(auto [dx, dy] : d){
+            int nx = x + dx, ny = y + dy;
+            
+            if(nx >= 0 && nx < arr.size() && ny >= 0 && ny < arr[0].size() && arr[nx][ny] != -1 && !check[nx][ny]){
+                q.push({nx, ny});
+                check[nx][ny] = true;
+            }
+        }
+    }
     
-    int val = ans_list.back();
-    val += map[x][y];
-    ans_list.pop_back();
-    ans_list.push_back(val);
-    
-    dfs(ans_list, visited, x, y + 1, map);
-    dfs(ans_list, visited, x, y - 1, map);
-    dfs(ans_list, visited, x + 1, y, map);
-    dfs(ans_list, visited, x - 1, y, map);
+    return res;
 }
+
 vector<int> solution(vector<string> maps) {
-    vector<int> answer, ans_list;
+    arr.assign(maps.size(), vector<int>(maps[0].size()));
+    check = arr;
     
-    vector<vector<int>> map;
-    for(int i = 0;i<maps.size();i++)
-    {
-        vector<int> temp(maps[0].length());
-        map.push_back(temp);
-    }
-    
-    for(int i = 0;i<maps.size();i++)
-    {
-        for(int j = 0;j<maps[0].length();j++)
-        {
-            if(maps[i][j] == 'X')
-                map[i][j] = -1;
+    for(int i = 0;i < maps.size();i++)
+        for(int j = 0;j < maps[0].size();j++){
+            if(isdigit(maps[i][j]))
+                arr[i][j] = maps[i][j] - '0';
             else
-                map[i][j] = maps[i][j] - '0';
+                arr[i][j] = -1;
         }
-    }
     
-    vector<vector<bool>> visited;
-    for(int i = 0;i<maps.size();i++)
-    {
-        vector<bool> temp(maps[0].length(), false);
-        visited.push_back(temp);
-    }
-    
-    for(int i = 0;i<maps.size();i++)
-    {
-        for(int j = 0;j<maps[0].length();j++)
-        {
-            if(map[i][j] != -1 && visited[i][j] == false)
-            {
-                ans_list.push_back(0);
-                dfs(ans_list, visited, i, j, map);
-            }   
+    for(int i = 0;i < maps.size();i++)
+        for(int j = 0;j < maps[0].size();j++){
+            if(arr[i][j] != -1 && !check[i][j])
+                answer.push_back(bfs(i, j));
         }
-    }
     
-    if(ans_list.empty())
-    {
-        answer.push_back(-1);
-    }
-    else
-    {
-        sort(ans_list.begin(), ans_list.end());
-        for(auto a : ans_list)
-            answer.push_back(a);
-    }
-    
+    (answer.empty() ? answer.push_back(-1) : sort(answer.begin(), answer.end()));
     return answer;
 }

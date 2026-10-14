@@ -2,33 +2,35 @@
 #include <vector>
 
 using namespace std;
-string returnU(string p)
-{
-    if(p.empty()) return "";
-    string u = "";
-    string v = "";
-    bool isU = true;
-    int isP = 0;
-    for(auto a : p)
-    {
-        if(a == ')') isP--;
-        else isP++;
-        if(isU) u += a;
-        else v += a;
-        if(isP == 0) isU = false;
-    }
-    if(u[0] == '(') return u + returnU(v);
+
+string solve(string p){
+    string u = "", v = "";
+    int flag = true, cnt = 0;
     
-    string ru = "";
-    for(int i = 1;i<u.length() - 1;i++)
-    {
-        if(u[i] == ')') ru += '(';
-        else ru += ')';
+    if(p.empty()) return "";
+    
+    for(auto a : p){
+        if(a == '(') cnt++;
+        else cnt--;
+        
+        if(flag) u += a;
+        else v += a;
+        
+        if(!cnt) flag = false;
     }
-    return "(" + returnU(v) + ")" + ru;
+    
+    if(u[0] == '(') return u + solve(v);
+    
+    u = u.substr(1, u.size() - 2);
+    for(int i = 0;i < u.size();i++){
+        if(u[i] == '(') u[i] = ')';
+        else u[i] = '(';
+    }
+    
+    return '(' + solve(v) + ')' + u;
 }
+
 string solution(string p) {
-    string answer = "";
-    answer = returnU(p);
+    string answer = solve(p);
     return answer;
 }

@@ -1,53 +1,47 @@
 #include <string>
 #include <vector>
-#include <cmath>
 
 using namespace std;
 
 vector<int> solution(vector<vector<string>> places) {
     vector<int> answer;
-    for(auto p : places)
-    {
-        vector<pair<int, int>> saram;
-        for(int i = 0;i<p.size();i++)
-            for(int j = 0;j<p[0].length();j++)
+    
+    for(auto p : places){
+        vector<pair<int, int>> arr;
+        
+        for(int i = 0;i < p.size();i++)
+            for(int j = 0;j < p[0].size();j++)
                 if(p[i][j] == 'P')
-                    saram.push_back({i, j});
+                    arr.push_back({i, j});
         
         bool flag = true;
-        for(int i = 0;i<saram.size();i++)
-        {
-            for(int j = i + 1;j<saram.size();j++)
-            {
-                int distance = abs(saram[i].first - saram[j].first) + abs(saram[i].second - saram[j].second);
-                if(distance <= 2)
-                {
-                    if(distance == 2)
-                    {
-                        if(saram[i].first == saram[j].first)
-                        {
-                            if(p[saram[i].first][(saram[i].second + saram[j].second) / 2] == 'X')
+        for(int i = 0;i < arr.size() && flag;i++){
+            for(int j = i + 1;j < arr.size() && flag;j++){
+                auto [x1, y1] = arr[i];
+                auto [x2, y2] = arr[j]; 
+                int dist = abs(x1 - x2) + abs(y1 - y2);
+                
+                if(dist <= 2){
+                    if(dist == 2){
+                        if(x1 == x2){
+                            if(p[x1][y1 + 1] == 'X')
                                 continue;
                         }
-                        else if(saram[i].second == saram[j].second)
-                        {
-                            if(p[(saram[i].first + saram[j].first) / 2][saram[i].second] == 'X')
+                        else if(y1 == y2){
+                            if(p[x1 + 1][y1] == 'X')
                                 continue;
                         }
-                        else
-                        {
-                            if(p[saram[i].first][saram[j].second] == 'X' && p[saram[j].first][saram[i].second] == 'X')
+                        else{
+                            if(p[x1][y2] == 'X' && p[x2][y1] == 'X')
                                 continue;
                         }
                     }
                     flag = false;
-                    break;
                 }
             }
-            if(!flag) break;
         }
-        if(flag) answer.push_back(1);
-        else answer.push_back(0);
+        answer.push_back(flag);
     }
+    
     return answer;
 }

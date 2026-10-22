@@ -4,39 +4,33 @@
 using namespace std;
 
 int solution(string s) {
-    int answer = 1000000;
-    for(int i = 1;i<=s.length();i++)
-    {
-        string now = s.substr(0, i);
-        int j, count = 1;
+    int answer = 1000;
+    
+    for(int i = 1;i <= s.size();i++){
+        vector<string> data;
+        
+        for(int j = 0;j < s.size();j += i)
+            data.push_back(s.substr(j, i));
+        
         vector<pair<string, int>> arr;
-        for(j = i;j<s.length();j+=i)
-        {
-            string temp;
-            if(s.length() - j < i)
-                temp = s.substr(j, s.length() - j);
-            else
-                temp = s.substr(j, i);
-            
-            if(now != temp)
-            {
-                arr.push_back({now, count});
-                now = temp;
-                count = 1;
+        string now = data[0];
+        int cnt = 1;
+        
+        for(int k = 1;k < data.size();k++){
+            if(now == data[k]) cnt++;
+            else{
+                arr.push_back({now, cnt});
+                now = data[k];
+                cnt = 1;
             }
-            else
-                count++;
         }
-        arr.push_back({now, count});
-        int len = 0;
-        for(auto a : arr)
-        {
-            if(a.second == 1)
-                len += a.first.length();
-            else
-                len += a.first.length() + to_string(a.second).length();
-        }
-        if(answer > len) answer = len;
-    }    
+        arr.push_back({now, cnt});
+        
+        int res = 0;
+        for(auto [d, c] : arr)
+            res += d.size() + (c == 1 ? 0 : to_string(c).size());
+        answer = min(answer, res);
+    }
+    
     return answer;
 }

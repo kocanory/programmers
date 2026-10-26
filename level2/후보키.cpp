@@ -3,101 +3,68 @@
 #include <algorithm>
 
 using namespace std;
-vector<vector<int>> keys;
-vector<vector<int>> candidate;
-vector<vector<string>> relate;
-int x = 0, y = 0;
+vector<string> key;
 
-void Makekey(int num)
-{
-    if(num == x) return;
-    int size = keys.size();
-    for(int i = 0;i < x;i++)
-    {
-        if(num == 0)
-        {
-            vector<int> arr;
-            arr.push_back(i);
-            keys.push_back(arr);
-        }
-        else
-        {
-            for(int j = 0;j<size;j++)
-            {
-                if(keys[j].size() == num)
-                {
-                    vector<int> arr;
-                    for(int k = 0;k<num;k++)
-                    {
-                        if(keys[j][k] != i)
-                            arr.push_back(keys[j][k]);
-                        else
-                            break;                
-                    }
-                    if(arr.size() == num)
-                    {
-                        arr.push_back(i);
-                        sort(arr.begin(), arr.end());
-                        if(find(keys.begin(), keys.end(), arr) == keys.end())
-                            keys.push_back(arr);
-                    }
-                }
-            }
-        }
-    }
-    Makekey(num + 1);
+bool cmp(string a, string b){
+    if(a.size() == b.size()) return stoi(a) < stoi(b);
+    return a.size() < b.size();
 }
 
-bool isCandidate(vector<int> check)
-{
-    for(int i = 0;i < y - 1;i++)
-    {
+void makeKey(string now, int idx, int size){
+    for(int i = idx;i < size;i++){
+        string k = now + to_string(i);
+        key.push_back(k);
+        makeKey(k, i + 1, size);
+    }
+}
+
+bool checkKey(string k, vector<vector<string>> &relation){
+    for(int i = 0;i < relation.size();i++){
         string a = "";
-        for(int j = 0;j<check.size();j++)
-            a = a + relate[i][check[j]] + "_";
-        for(int k = i + 1;k < y;k++)
-        {
+        
+        for(auto idx : k)
+            a += relation[i][idx - '0'] + '_';
+        
+        for(int j = i + 1;j < relation.size();j++){
             string b = "";
-            for(int l = 0;l<check.size();l++)
-                b = b + relate[k][check[l]] + "_";
+            
+            for(auto idx : k)
+                b += relation[j][idx - '0'] + '_';
+            
             if(a == b) return false;
         }
     }
     return true;
 }
 
-void findCandidate()
-{
-    int size = keys.size();
-    for(int i = 0;i<size;i++)
-    {
-        if(isCandidate(keys[i]) == true)
-        {
-            candidate.push_back(keys[i]);
-            for(int j = size - 1;j > i;j--)
-            {
+int findKey(vector<vector<string>> &relation){
+    sort(key.begin(), key.end(), cmp);
+    vector<bool> check(key.size(), true);
+    int cnt = 0;
+    
+    for(int i = 0;i < key.size();i++){
+        if(checkKey(key[i], relation) && check[i]){
+            cnt++;
+            
+            for(int j = i + 1;j < key.size();j++){
                 int same = 0;
-                for(int k = 0;k<keys[i].size();k++)
-                    for(int l = 0;l<keys[j].size();l++)
-                        if(keys[i][k] == keys[j][l])
+                for(auto a : key[i]){
+                    for(auto b : key[j]){
+                        if(a == b){
                             same++;
-                if(same == keys[i].size()) {
-                    keys.erase(keys.begin() + j);
-                    size--;
+                            break;
+                        }
+                    }
                 }
+                if(same == key[i].size())
+                    check[j] = false;
             }
         }
     }
+    return cnt;
 }
 
 int solution(vector<vector<string>> relation) {
-    int answer = 0;
-    relate = relation;
-    x = relate[0].size();
-    y = relate.size();
-    
-    Makekey(0);
-    findCandidate();
-    answer = candidate.size();
-    return answer;
+    makeKey("", 0, relation[0].size());
+    return findKey(relation);
 }

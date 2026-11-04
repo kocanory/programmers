@@ -2,72 +2,49 @@
 #include <vector>
 
 using namespace std;
-vector<int> arr;
-int Max = -1;
-bool flag = false;
 
-void recursive(int n, vector<int> &info, vector<int> point)
-{
-    if(point.size() > 11) return;
-    if(n == 0)
-    {
-        int apeach = 0, ryan = 0;
-        while(point.size() < 11)
-            point.push_back(0);
-        
-        for(int i = 0;i < point.size();i++)
-        {
-            if(point[i] == 0 && info[i] == 0)
-                continue;
-            if(point[i] > info[i])
-                ryan += ((10 - i));
-            else
-                apeach += ((10 - i));
+int Max = -1;
+vector<int> answer;
+
+void solve(int n, vector<int> &info, vector<int> points){
+    if(points.size() > 11 || n < 0) return;
+    if(n == 0){
+        while(points.size() < 11) points.push_back(0);
+        int r = 0, a = 0;
+        for(int i = 0;i < 11;i++){
+            if(!info[i] && !points[i]) continue;
+            if(points[i] > info[i]) r += 10 - i;
+            else a += 10 - i;
         }
         
-        if(ryan <= apeach) return;
+        if(r <= a) return;
         
-        flag = true;
-            
-        if(ryan - apeach > Max)
-        {
-            Max = ryan - apeach;
-            arr = point;
-        }
-        else if(ryan - apeach == Max)
-        {
-            int i = 10, j = 10;
-            while(point[i] == 0) i--;
-            while(arr[j] == 0) j--;
-            if(i > j)
-            {
-                arr = point;
+        if(r - a >= Max){
+            if(r - a > Max){
+                Max = r - a;
+                answer = points;
+            }
+            else{
+                for(int i = 10;i >= 0;i--){
+                    if(!answer[i] && !points[i]) continue;
+                    if(points[i] > answer[i])
+                        answer = points;
+                    break;
+                }
             }
         }
         return;
     }
     
-    for(int i = 0;i <= n;i++)
-    {
-        point.push_back(i);
-        recursive(n - i, info, point);
-        point.pop_back();
+    for(int i = 0;i <= n;i++){
+        points.push_back(i);
+        solve(n - i, info, points);
+        points.pop_back();
     }
 }
 
 vector<int> solution(int n, vector<int> info) {
-    vector<int> answer;
-    
-    vector<int> point;
-    recursive(n, info, point);
-    
-    if(!flag)
-    {
-        answer.push_back(-1);
-    }
-    else
-    {
-        answer = arr;
-    }
+    solve(n, info, vector<int>());
+    if(answer.empty()) answer.push_back(-1);
     return answer;
 }

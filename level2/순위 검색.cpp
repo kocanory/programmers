@@ -1,58 +1,57 @@
 #include <string>
 #include <vector>
-#include <unordered_map>
 #include <sstream>
+#include <unordered_map>
 #include <algorithm>
 
 using namespace std;
-unordered_map<string, vector<int>> um;
-void add(vector<string> &s, string str, int count, int score)
-{
-    if(count >= 4)
-    {
-        um[str].push_back(score);
+
+unordered_map<string, vector<int>> check;
+
+void add(vector<string> &info, string now, int idx){
+    if(idx >= 4){
+        check[now].push_back(stoi(info.back()));
         return;
     }
-    for(int i = 0;i < 2;i++)
-    {
-        if(i == 0)
-            add(s, str + s[count], count + 1, score);
-        else
-            add(s, str + "-", count + 1, score);    
-    }
+    
+    add(info, now + info[idx], idx + 1);
+    add(info, now + '-', idx + 1);
 }
+
 vector<int> solution(vector<string> info, vector<string> query) {
     vector<int> answer;
-    for(auto i : info)
-    {
+    
+    for(auto i : info){
         stringstream ss(i);
         string s;
-        vector<string> iv;
+        
+        vector<string> arr;
         while(getline(ss, s, ' '))
-            iv.push_back(s);
-        add(iv, "", 0, stoi(iv.back()));
+            arr.push_back(s);
+        
+        add(arr, "", 0);
     }
     
-    for(auto &u : um)
-        sort(u.second.begin(), u.second.end());
+    for(auto &[k, v] : check)
+        sort(v.begin(), v.end());
     
-    for(auto q : query)
-    {
-        vector<string> qv;
+    for(auto q : query){
         stringstream ss(q);
         string s;
+        vector<string> arr;
+        
         while(getline(ss, s, ' '))
             if(s != "and")
-                qv.push_back(s);
-        int score = stoi(qv.back());
-        vector<int> sv = um[qv[0] + qv[1] + qv[2] + qv[3]];
-        if(!sv.empty())
-        {
-            int idx = lower_bound(sv.begin(), sv.end(), score) - sv.begin();
-            answer.push_back(sv.size() - idx);
-        }
-        else
-            answer.push_back(0);
+                arr.push_back(s);
+        
+        int score = stoi(arr.back());
+        arr.pop_back();
+        
+        s = "";
+        for(auto a : arr)
+            s += a;
+        
+        answer.push_back(check[s].size() - distance(check[s].begin(), lower_bound(check[s].begin(), check[s].end(), score)));
     }
     
     return answer;

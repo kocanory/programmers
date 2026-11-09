@@ -5,14 +5,14 @@ using namespace std;
 
 int solution(int n) {
     if(n % 2) return 0;
-    if(n == 2) return 3;
-    if(n == 4) return 11;
-    long long answer = 0, sum = 3, back = 11;
-    for(int i = 6;i<=n;i+=2)
-    {
-        answer = (3 * back + 2 * sum + 2) % 1000000007;
-        sum += back;
-        back = answer;
+    vector<long long> dp(n + 1);
+    dp[2] = 3;
+    
+    long long s = 3;
+    
+    for(int i = 4;i <= n;i += 2){
+        dp[i] = (3 * dp[i - 2] + (i >= 6 ? 2 * s : 0) + 2) % 1000000007;
+        s += (i >= 6 ? dp[i - 2] : 0);
     }
-    return answer;
+    return dp[n];
 }

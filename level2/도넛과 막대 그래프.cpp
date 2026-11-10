@@ -5,33 +5,30 @@
 using namespace std;
 
 vector<int> solution(vector<vector<int>> edges) {
-    vector<int> answer(4);
+    vector<int> answer(4), starts;
+    unordered_map<int, int> check, node;
     
-    unordered_map<int, int> root;
     for(auto e : edges)
-        root[e[0]]++;
+        check[e[0]]++;
     
     for(auto e : edges){
-        if(root.find(e[1]) != root.end()) root.erase(e[1]);
+        if(check.find(e[1]) != check.end())
+            check.erase(e[1]);
     }
     
-    int center_count = -1;
-    for(auto r : root){
-        if(r.second > center_count){
-            answer[0] = r.first;
-            center_count = r.second;
+    int maxCnt = -1;
+    for(auto [k, v] : check){
+        if(v > maxCnt){
+            answer[0] = k;
+            maxCnt = v;
         }
     }
-    
-    vector<int> starts;
-    unordered_map<int, int> node;
     
     for(auto e : edges){
         if(e[0] == answer[0]) starts.push_back(e[1]);
         else{
-            if(node.find(e[0]) == node.end()){
+            if(node.find(e[0]) == node.end())
                 node[e[0]] = e[1];
-            }
             else{
                 node.erase(e[0]);
                 answer[3]++;
@@ -41,11 +38,11 @@ vector<int> solution(vector<vector<int>> edges) {
     
     for(auto s : starts){
         if(node.find(s) == node.end()) continue;
-        int next = s;
+        int now = s;
         while(true){
-            if(node.find(next) != node.end()){
-                next = node[next];
-                if(next == s){
+            if(node.find(now) != node.end()){
+                now = node[now];
+                if(now == s){
                     answer[1]++;
                     break;
                 }
@@ -54,6 +51,6 @@ vector<int> solution(vector<vector<int>> edges) {
         }
     }
     
-    answer[2] = starts.size() - answer[1] - answer[3];
+    answer[2] = starts.size() - (answer[1] + answer[3]);
     return answer;
 }

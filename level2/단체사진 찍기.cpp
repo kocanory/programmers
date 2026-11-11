@@ -1,43 +1,46 @@
 #include <string>
 #include <vector>
-#include <cmath>
+#include <map>
 
 using namespace std;
-string character;
-int answer;
-bool correct(char o, int n1, int n2)
-{
-    if(o == '=' && n1 == n2) return true;
-    else if(o == '>' && n1 > n2) return true;
-    else if(o == '<' && n1 < n2) return true;
-    else return false;
+
+string s = "ACFJMNRT";
+map<char, bool> visited;
+int answer = 0;
+
+bool check(int d1, int d2, char op){
+    if(op == '=' && d1 == d2) return true;
+    if(op == '>' && d1 > d2) return true;
+    if(op == '<' && d1 < d2) return true;
+    return false;
 }
 
-void recursive(string s, vector<string> &data)
-{
-    if(s.length() < 8)
-    {
-        for(auto c : character)
-        {
-            if(s.find(c) == string::npos) recursive(s + c, data);
+void solve(string now, vector<string> &data){
+    if(now.size() >= 8){
+        bool flag = true;
+        for(auto d : data){
+            int d1 = abs(int(now.find(d[0])) - int(now.find(d[2]))) - 1, d2 = d[4] - '0';
+            
+            if(!check(d1, d2, d[3])){
+                flag = false;
+                break;
+            }
         }
+        if(flag) answer++;
+        return;
     }
-    else
-    {
-        for(auto d : data)
-        {
-            int n1 = abs((int)s.find(d[0]) - (int)s.find(d[2])) - 1;
-            int n2 = d[4] - '0';
-            char o = d[3];
-            if(!correct(o, n1, n2)) return;
+    
+    for(auto a : s){
+        if(!visited[a]){
+            visited[a] = true;
+            solve(now + a, data);
+            visited[a] = false;
         }
-        answer++;
     }
 }
-    
+
 int solution(int n, vector<string> data) {
     answer = 0;
-    character = "ACFJMNRT";
-    recursive("", data);
+    solve("", data);
     return answer;
 }

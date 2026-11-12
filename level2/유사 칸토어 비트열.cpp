@@ -1,23 +1,20 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
+#include <string>
+#include <vector>
+#include <cmath>
+
+using namespace std;
 
 int solution(int n, long long l, long long r) {
     int answer = 0;
-    for(long long i = l;i <= r;i++)
-    {
+    
+    for(long long i = l, num;i <= r;i++){
         if(i % 5 == 3) continue;
-        long long number = i;
-        while(number > 5)
-        {
-            if(number % 5 == 0)
-                number /= 5;
-            else
-                number = number / 5 + 1;
-            if(number % 5 == 3) break;
-        }
-        if(number % 5 == 3) continue;
-        answer++;
+        num = i;
+        while(num > 5 && num % 5 != 3)
+            num = ceil(num / (double)5);
+        
+        if(num % 5 != 3) answer++;
     }
+    
     return answer;
 }
